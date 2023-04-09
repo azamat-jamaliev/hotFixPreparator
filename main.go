@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"hotFixPreparator/backend/components/archivarius"
+	"hotFixPreparator/backend/components/sessionManager"
 	"log"
 	"net/http"
 	"os"
@@ -11,8 +12,12 @@ import (
 	"time"
 )
 
+var manager *sessionManager.Manager
+
+const LISTEN_PORT = 3000
+
 func main() {
-	fmt.Print("Started")
+	fmt.Printf("Started: http://localhost:%d/\n", LISTEN_PORT)
 	f, err := os.OpenFile(path.Join("./logs/server.log"), os.O_RDWR|os.O_CREATE, 0666)
 	if err != nil {
 		panic(err)
@@ -21,6 +26,15 @@ func main() {
 	log.SetOutput(f)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
+	manager, err = sessionManager.NewManager()
+	if err != nil {
+		log.Panicln("[ERROR] cannot create sessionManager. Error=", err)
+	}
+
+	http.HandleFunc("/api/session", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("[DEBUG] /api/session received request: [%v]", r)
+		manager.HandleHttpSession(w, r)
+	})
 	// http.Handle("/", )
 	http.HandleFunc("/api/test/hf", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -56,7 +70,7 @@ func main() {
 		json.NewEncoder(w).Encode(cds)
 	})
 	http.Handle("/", http.FileServer(http.Dir("./public/")))
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(fmt.Sprintf(":%d", LISTEN_PORT), nil)
 
 	// Routing
 	// app.Get("/api/tasks", controllers.FetchTasks)

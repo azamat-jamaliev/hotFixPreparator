@@ -14,9 +14,20 @@ export interface IAppProps {
 }
 
 export default class App extends React.Component<IAppProps, IAppProps> {
+  aaSessionId = ""
   constructor(props: IAppProps){
     super(props);
-    this.state = props
+    this.state = props;
+
+    setInterval(() => { 
+      fetch("/api/session",{ headers: {
+        AaSessionId: this.aaSessionId
+        }}).then((resp)=>{
+        console.log("[DEBUG] /api/session resonse=",resp);
+        this.aaSessionId = resp.headers.get("Aasessionid")??"";
+        console.log("[DEBUG] /api/session resonsethis.Aasessionid=", this.aaSessionId);
+      });
+    }, 10000);
   }
   counterButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => { 
     let newVal = this.state.counter+1;
