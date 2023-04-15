@@ -1,4 +1,4 @@
-import React from 'react'
+import React , { useState } from 'react';
 import ReactDOM from 'react-dom/client'
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography'
@@ -12,7 +12,6 @@ import Grid from '@mui/material/Grid';
 export interface IAppProps {
   counter: number;
 }
-
 export default class App extends React.Component<IAppProps, IAppProps> {
   aaSessionId = ""
   constructor(props: IAppProps){
@@ -25,14 +24,13 @@ export default class App extends React.Component<IAppProps, IAppProps> {
         }}).then((resp)=>{
         console.log("[DEBUG] /api/session resonse=",resp);
         this.aaSessionId = resp.headers.get("Aasessionid")??"";
-        console.log("[DEBUG] /api/session resonsethis.Aasessionid=", this.aaSessionId);
       });
     }, 10000);
   }
   counterButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => { 
     let newVal = this.state.counter+1;
-    // console.log("Click. new value=", newVal); 
-    this.setState({counter:newVal})  }
+    this.setState({counter:newVal})  
+  }
   public render() {
     return (
     <div>

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import CodeDrops from './CodeDrops';
 import { CD } from '../classes/hf_types';
 import HFList from './HFList';
+import HfUpload from './HFUpload';
 
 export interface IHFManagerProps {
   height?: number;
@@ -40,17 +40,14 @@ export default class HFManager extends React.Component<IHFManagerProps, IHFManag
   }
   public render() {
     return (
-      <div>
+    <div>
       <Stack direction="row" alignItems="center" spacing={2}>
         <CodeDrops height={this.props.height} codeDrops={this.state.codeDrops} 
           onSelected={this.codeDropWasSelected}
         />
         <TextField id="standard-basic" label="HF TMS ticket number" variant="outlined" sx={{ height:this.props.height }} />
-        <Button variant="outlined" component="label" sx={{ height:this.props.height }}>
-          Upload *.zip with HF
-          <input hidden accept="image/*" multiple type="file" />
-        </Button>
-    </Stack>
+        <HfUpload height={this.props.height} currentDrop={this.state.currentDrop} />
+      </Stack>
     <HFList HFList={this.state.currentDrop?.Content}></HFList>
     </div>
     );
